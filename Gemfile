@@ -22,12 +22,18 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+group :development, :test do
+	gem 'test-unit'
+end
+
 gem 'jquery-rails'
 
 gem 'haml-rails'
 gem 'simple_form'
 
 gem 'devise'
+
+gem 'simple_enum'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
