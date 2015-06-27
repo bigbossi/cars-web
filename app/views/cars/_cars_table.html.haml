@@ -1,0 +1,13 @@
+%table.table.table-striped#cars_list_table
+  %thead
+    %tr
+      %th Name
+      %th Color
+      %th Horsepowers
+      
+  %tbody
+    - cars.each do |car|
+      %tr
+        %td= link_to car.name, car_path(car)
+        %td= car.color
+        %td= car.horsepower

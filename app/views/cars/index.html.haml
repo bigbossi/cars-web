@@ -1,26 +1,17 @@
 - model_class = Car
 .page-header
   %h1=t '.title', :default => model_class.model_name.human.pluralize.titleize
-%table.table.table-striped#cars_list_table
-  %thead
-    %tr
-      %th= model_class.human_attribute_name(:name)
-      %th= model_class.human_attribute_name(:color)
-      %th= model_class.human_attribute_name(:horsepower)
-      %th
-        %input#checkall{type: "checkbox"}
-      %th=t '.actions', :default => t("helpers.actions")
-  %tbody
-    - @cars.each do |car|
-      %tr
-        %td= link_to car.name, car_path(car)
-        %td= car.color
-        %td= car.horsepower
-        %td
-          %input.checkthis{type: "checkbox"}
 
-        %td
-          = link_to t('.edit', :default => t("helpers.links.edit")), edit_car_path(car), :class => 'btn btn-mini'
-          = link_to t('.destroy', :default => t("helpers.links.destroy")), car_path(car), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-mini btn-danger'
-
+%h3 All cars
+= form_tag destroy_multiple_cars_path, method: :delete do 
+  = render partial: 'cars_table_with_options', locals: {:cars => @cars}, cache: true
+            
 = link_to t('.new', :default => t("helpers.links.new")), new_car_path, :class => 'btn btn-primary'
+
+- unless user_signed_in?
+  %h3 List cars has at least 200HP
+  = render partial: 'cars_table', locals: {:cars => @cars_200}
+  
+  %h3 List cars which has at least 200HP with grey color add by woman
+  = render partial: 'cars_table', locals: {:cars => @cars_grey_200_female}
+  

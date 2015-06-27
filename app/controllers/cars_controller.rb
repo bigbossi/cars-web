@@ -13,14 +13,15 @@ class CarsController < ApplicationController
 
       # Cars with at least 200 horsepowers
       @cars_200 = Car.where('horsepower >= ?', 200).order('cars.name ASC')
-      p @cars_200
-
+      
       #grey cars with at least 200 horsepowers and owned by woman
-      @cars_200_female = Car.owned_by_female.where('horsepower >= ?', 200).order('cars.name ASC')
-      p @cars_200_female
-
+      @cars_grey_200_female = Car.owned_by_female.where('cars.horsepower >= ? and lower(cars.color) = ?', 200, 'grey').order('cars.name ASC')
+      
     end
-    respond_with(@cars)
+    respond_with @cars do |format|
+      format.xml { render :layout => false, :text => @cars.to_xml }
+      format.html
+    end
   end
 
   def show
@@ -49,6 +50,16 @@ class CarsController < ApplicationController
   def destroy
     @car.destroy
     respond_with(@car)
+  end
+
+  def destroy_multiple
+    if params[:cars_list].present?
+      Car.destroy(params[:cars_list])
+      redirect_to cars_path, notice: 'Delete selected successfully!'
+    else
+      redirect_to cars_path, alert: 'You have to select at lease one car to delete.'
+    end
+    
   end
 
   private

@@ -1,7 +1,11 @@
 CarsWeb::Application.routes.draw do
   devise_for :users
 
-  resources :cars
+  resources :cars do
+    collection do
+      delete 'destroy_multiple'
+    end
+  end
 
   root to: 'cars#index'
 
