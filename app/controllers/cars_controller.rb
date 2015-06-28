@@ -37,13 +37,13 @@ class CarsController < ApplicationController
   end
 
   def create
-    @car = Car.new(params[:car].merge(:user => current_user))
+    @car = Car.new(car_params.merge(:user => current_user))
     @car.save
     respond_with(@car)
   end
 
   def update
-    @car.update_attributes(params[:car])
+    @car.update_attributes(car_params)
     respond_with(@car)
   end
 
@@ -65,6 +65,10 @@ class CarsController < ApplicationController
   private
     def set_car
       @car = Car.find(params[:id])
+    end
+
+    def car_params
+      params.require(:car).permit(:name, :color, :horsepower)
     end
 
     def is_owner?
