@@ -8,14 +8,16 @@
         %input#checkall{type: "checkbox"}
       %th
         =t '.actions', :default => t("helpers.actions" + ":")
-        = submit_tag "Delete selected", :class => 'btn btn-mini btn-danger', id: 'delete_multiple'
-        = link_to 'XML', cars_path(:format => 'xml'), :class => 'btn btn-mini btn-info'
+        = submit_tag "Delete selected", :class => 'btn btn-sm btn-danger', id: 'delete_multiple'
+        = link_to 'XML', cars_path(:format => 'xml'), :class => 'btn btn-sm btn-info'
+        = link_to 'Reload', clear_list_cars_cache_by_request_cars_path, method: :delete, :remote => true, :class => 'btn btn-sm btn-primary' unless user_signed_in?
   %tbody
-    - cars.each do |car|
-      %tr
-        %td= link_to car.name, car_path(car)
-        %td= car.color
-        %td= car.horsepower
-        %td= check_box_tag "cars_list[]", car.id
-        %td
-          = link_to t('.edit', :default => t("helpers.links.edit")), edit_car_path(car), :class => 'btn btn-mini'
+    - cache('all_cars', :expires_in => 5.minutes) do
+      - cars.each do |car|
+        %tr
+          %td= link_to car.name, car_path(car)
+          %td= car.color
+          %td= car.horsepower
+          %td= check_box_tag "cars_list[]", car.id
+          %td
+            = link_to t('.edit', :default => t("helpers.links.edit")), edit_car_path(car), :class => 'btn btn-sm btn-default'

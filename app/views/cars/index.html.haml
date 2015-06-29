@@ -4,7 +4,8 @@
 
 %h3 All cars
 = form_tag destroy_multiple_cars_path, method: :delete do 
-  = render partial: 'cars_table_with_options', locals: {:cars => @cars}, cache: true
+  %div#all_cars_list
+    = render partial: 'cars_table_with_options', locals: {:cars => @cars}, cache: true
             
 = link_to t('.new', :default => t("helpers.links.new")), new_car_path, :class => 'btn btn-primary'
 
