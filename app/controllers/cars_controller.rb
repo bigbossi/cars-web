@@ -2,6 +2,7 @@ class CarsController < ApplicationController
   before_filter :set_car, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user!, only: [:new, :create, :update]
   before_filter :is_owner? , only: [:edit, :update]
+  after_filter :clear_list_cars_cache, only:[:update, :destroy_multiple, :destroy, :create]
   respond_to :html
 
   def index
@@ -9,7 +10,7 @@ class CarsController < ApplicationController
       @cars = Car.owned_by_user(current_user).order('cars.name ASC')
     
     else
-      @cars = Car.order('cars.name ASC')
+      @cars = Car.order('cars.name ASC') unless fragment_exist?('all_cars')
 
       # Cars with at least 200 horsepowers
       @cars_200 = Car.where('horsepower >= ?', 200).order('cars.name ASC')
@@ -62,9 +63,26 @@ class CarsController < ApplicationController
     
   end
 
+  def clear_list_cars_cache_by_request #When user press reload button
+    if user_signed_in?
+      redirect_to cars_path, alert: 'This available on guest only, :))'
+    else
+      Rails.cache.clear 'all_cars'
+      # Query again to get cars list
+      @cars = Car.order('cars.name ASC')
+      respond_to do |format|
+        format.js
+      end
+    end
+  end
+
   private
     def set_car
       @car = Car.find(params[:id])
+    end
+
+    def clear_list_cars_cache
+      Rails.cache.clear 'all_cars'
     end
 
     def is_owner?
